@@ -18,10 +18,10 @@
 using namespace pandemic;
 
 #include <string>
-using namespace std; //used to include functions such as memcpy..
+using namespace std; 
 
 
-TEST_CASE("Scientist"){
+TEST_CASE("Case 1 : Scientist"){
     Board board;
     Scientist player{board, City::Santiago, 1};
     player.take_card(Santiago);
@@ -32,7 +32,7 @@ TEST_CASE("Scientist"){
 }
 
 
-TEST_CASE("Dispatcher"){
+TEST_CASE("Case 2: Dispatcher"){
     Board board;
     Dispatcher player{board, City::Sydney};
     CHECK_THROWS(player.build());
@@ -50,7 +50,26 @@ TEST_CASE("Dispatcher"){
 }
 
 
-TEST_CASE("operator []"){
+TEST_CASE("Case 3 - OprationsExpert"){
+    Board board;
+    OperationsExpert player{board, LosAngeles};
+    player.build();
+    player.take_card(City::Chicago).take_card(City::Washington).take_card(City::Paris); 
+    player.fly_direct(City::Washington);
+    player.build();
+    player.take_card(Washington).take_card(SanFrancisco).take_card(Chicago).take_card(StPetersburg);
+    CHECK_THROWS(player.fly_shuttle(City::StPetersburg));
+    player.fly_direct(Chicago);
+    player.build();
+    board[City::Chicago] = 5;
+    board.remove_cures();
+    CHECK_NOTHROW(player.discover_cure(Color::Blue));
+    CHECK_NOTHROW(player.treat(City::Chicago));
+}
+
+
+
+TEST_CASE("Case 4 - operator []"){
 	Board board;  
 	board[City::Baghdad] = 4;     
 	board[City::Chicago] = 2;    
@@ -75,21 +94,4 @@ TEST_CASE("operator []"){
     CHECK(board[City::Karachi] == 1);
     board[City::Karachi] = 0;
     CHECK(board[City::Karachi] == 0);
-}
-
-TEST_CASE("OprationsExpert"){
-    Board board;
-    OperationsExpert player{board, LosAngeles};
-    player.build();
-    player.take_card(City::Chicago).take_card(City::Washington).take_card(City::Paris); 
-    player.fly_direct(City::Washington);
-    player.build();
-    player.take_card(Washington).take_card(SanFrancisco).take_card(Chicago).take_card(StPetersburg);
-    CHECK_THROWS(player.fly_shuttle(City::StPetersburg));
-    player.fly_direct(Chicago);
-    player.build();
-    board[City::Chicago] = 5;
-    board.remove_cures();
-    CHECK_NOTHROW(player.discover_cure(Color::Blue));
-    CHECK_NOTHROW(player.treat(City::Chicago));
 }
